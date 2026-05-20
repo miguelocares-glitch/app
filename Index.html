@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beta Venta Interna</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:#3aaa7a; --green-dim:#1e2a24;
+    --bg:#141414; --bg2:#1c1c1c; --border:#2e2e2e;
+    --text:#e4e4dc; --text2:#888; --text3:#555;
+    --amber:#efb234; --amber-dim:#3a2e0a;
+    --blue:#6a9fd8;  --blue-dim:#1a1f2e;
+    --red:#cc5555;   --red-dim:#2a1a1a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+  .topbar{background:#0e0e0e;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 18px;height:52px;position:sticky;top:0;z-index:100;}
+  .logo{background:#fff;color:#111;font-weight:700;font-size:13px;width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .topbar-title{font-size:13px;font-weight:500;letter-spacing:.05em;flex:1;}
+  .topbar-date{font-size:11px;color:var(--text3);}
+  .avatar{width:30px;height:30px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;}
+  .hero{background:var(--green-dim);border-bottom:1px solid #2a3d30;padding:20px 20px 18px;}
+  .hero h1{font-size:17px;font-weight:500;margin-bottom:3px;}
+  .hero p{font-size:12px;color:var(--green);}
+  .content{padding:16px;}
+  .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+  .metric{background:var(--bg2);border-radius:10px;padding:14px;border:1px solid var(--border);position:relative;overflow:hidden;}
+  .metric::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--green);}
+  .metric.amber::before{background:var(--amber);}
+  .metric.blue::before{background:var(--blue);}
+  .metric.red::before{background:var(--red);}
+  .metric-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;padding-left:8px;}
+  .metric-value{font-size:28px;font-weight:600;color:var(--text);padding-left:8px;font-family:'DM Mono',monospace;}
+  .metric-sub{font-size:10px;color:var(--text3);padding-left:8px;margin-top:3px;}
+  .metric-icon{position:absolute;top:12px;right:12px;font-size:22px;opacity:.15;}
+  .section-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;margin-top:6px;}
+  .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+  .action{background:var(--bg2);border-radius:10px;padding:14px 10px;border:1px solid var(--border);text-align:center;cursor:pointer;transition:border-color .15s,background .15s;text-decoration:none;display:block;}
+  .action:hover{border-color:var(--green);background:var(--green-dim);}
+  .action-icon{font-size:22px;margin-bottom:7px;}
+  .action-name{font-size:11px;font-weight:500;color:var(--text);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  @media(max-width:520px){.two-col{grid-template-columns:1fr;}}
+  .panel{background:var(--bg2);border-radius:10px;border:1px solid var(--border);overflow:hidden;}
+  .panel-head{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .panel-head span{font-size:12px;font-weight:500;color:var(--text2);}
+  .panel-loading{padding:20px;text-align:center;font-size:12px;color:var(--text3);}
+  .order-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);}
+  .order-row:last-child{border-bottom:none;}
+  .order-initials{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0;}
+  .order-info{flex:1;min-width:0;}
+  .order-name{font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .order-detail{font-size:10px;color:var(--text3);margin-top:1px;}
+  .badge{font-size:9px;padding:3px 7px;border-radius:20px;font-weight:600;white-space:nowrap;flex-shrink:0;}
+  .badge-revision {background:var(--amber-dim);color:var(--amber);}
+  .badge-revisado {background:var(--blue-dim);color:var(--blue);}
+  .badge-entregado{background:#0f2a1c;color:var(--green);}
+  .badge-default  {background:#2a2a2a;color:var(--text3);}
+  .cat-row{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);}
+  .cat-row:last-child{border-bottom:none;}
+  .cat-name{font-size:11px;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cat-bar-wrap{width:60px;height:3px;background:#333;border-radius:2px;overflow:hidden;flex-shrink:0;}
+  .cat-bar{height:3px;border-radius:2px;background:var(--green);}
+  .cat-count{font-size:10px;color:var(--text3);width:24px;text-align:right;flex-shrink:0;}
+  .error-box{background:var(--red-dim);border:1px solid var(--red);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--red);margin-bottom:14px;display:none;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .fade  {animation:fadeUp .35s ease forwards;}
+  .fade-2{animation:fadeUp .35s ease .1s forwards;opacity:0;}
+  .fade-3{animation:fadeUp .35s ease .2s forwards;opacity:0;}
+  .fade-4{animation:fadeUp .35s ease .3s forwards;opacity:0;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">M</div>
+  <div class="topbar-title">BETA VENTA INTERNA</div>
+  <div class="topbar-date" id="fecha-hoy"></div>
+  <div class="avatar">M</div>
+</div>
+
+<div class="hero fade">
+  <h1>Bienvenido 👋</h1>
+  <p id="subtitulo">Cargando resumen del día...</p>
+</div>
+
+<div class="content">
+
+  <div class="error-box" id="error-box">
+    ⚠️ No se pudieron cargar los datos. Verifica la conexión o los nombres de columnas.
+  </div>
+
+  <div class="metrics fade-2">
+    <div class="metric">
+      <div class="metric-icon">📋</div>
+      <div class="metric-label">Total pedidos</div>
+      <div class="metric-value" id="m-total"><span class="spinner"></span></div>
+      <div class="metric-sub">registrados</div>
+    </div>
+    <div class="metric amber">
+      <div class="metric-icon">🔍</div>
+      <div class="metric-label">En revisión</div>
+      <div class="metric-value" id="m-revision"><span class="spinner"></span></div>
+      <div class="metric-sub">pendientes</div>
+    </div>
+    <div class="metric blue">
+      <div class="metric-icon">✅</div>
+      <div class="metric-label">Revisados</div>
+      <div class="metric-value" id="m-revisado"><span class="spinner"></span></div>
+      <div class="metric-sub">aprobados</div>
+    </div>
+    <div class="metric">
+      <div class="metric-icon">🚚</div>
+      <div class="metric-label">Entregados</div>
+      <div class="metric-value" id="m-entregado"><span class="spinner"></span></div>
+      <div class="metric-sub">completados</div>
+    </div>
+  </div>
+
+  <div class="section-label fade-3">Acciones rápidas</div>
+  <div class="actions fade-3">
+    <a class="action" href="#pedidos">
+      <div class="action-icon">📝</div>
+      <div class="action-name">Nuevo pedido</div>
+    </a>
+    <a class="action" href="#clientes">
+      <div class="action-icon">👥</div>
+      <div class="action-name">Clientes</div>
+    </a>
+    <a class="action" href="#productos">
+      <div class="action-icon">📦</div>
+      <div class="action-name">Catálogo</div>
+    </a>
+  </div>
+
+  <div class="two-col fade-4">
+    <div>
+      <div class="section-label">Pedidos recientes</div>
+      <div class="panel">
+        <div class="panel-head">
+          <span>Últimos registros</span>
+          <span style="font-size:10px;color:var(--text3)" id="ultima-act"></span>
+        </div>
+        <div id="pedidos-lista">
+          <div class="panel-loading"><span class="spinner"></span> Cargando...</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Categorías</div>
+      <div class="panel">
+        <div class="panel-head">
+          <span>Productos por categoría</span>
+        </div>
+        <div id="cat-lista">
+          <div class="panel-loading"><span class="spinner"></span> Cargando...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── CONFIGURACIÓN ───────────────────────────────────────────
+  const APP_ID     = 'abfb0e9b-9673-481c-9dcf-627e57131da9';
+  const ACCESS_KEY = 'V2-QFZTh-Sf0jV-ZhNNt-1j05J-5HjjV-mu97x-7QIlE-hG2YO';
+
+  // Tabla Pedidos — nombres exactos de columnas
+  const T_PEDIDOS       = 'Pedidos';
+  const COL_ESTADO      = 'Estado';
+  const COL_CLIENTE     = 'Nombre_Cliente';
+  const COL_FOLIO       = 'Folio';
+  const COL_FECHA       = 'Fecha';
+  const COL_TOTAL       = 'Total';
+
+  // Tabla Productos — nombres exactos de columnas
+  const T_PRODUCTOS     = 'Productos';
+  const COL_CATEGORIA   = 'Categoria';
+
+  // Valores exactos del campo Estado
+  const E_REVISION  = 'EN REVISIÓN';
+  const E_REVISADO  = 'REVISADO';
+  const E_ENTREGADO = 'ENTREGADO';
+  // ────────────────────────────────────────────────────────────
+
+  function apiUrl(tabla) {
+    return `https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/${encodeURIComponent(tabla)}/Action`;
+  }
+  const HEADERS = { 'applicationAccessKey': ACCESS_KEY, 'Content-Type': 'application/json' };
+  const BODY    = JSON.stringify({ Action: 'Find', Properties: { Locale: 'es-CL' }, Rows: [] });
+
+  function badgeCls(estado) {
+    const e = (estado||'').trim().toUpperCase();
+    if (e === E_REVISION)  return 'badge-revision';
+    if (e === E_REVISADO)  return 'badge-revisado';
+    if (e === E_ENTREGADO) return 'badge-entregado';
+    return 'badge-default';
+  }
+  function iniColor(estado) {
+    const e = (estado||'').trim().toUpperCase();
+    if (e === E_REVISION)  return { bg:'#3a2e0a', color:'#efb234' };
+    if (e === E_REVISADO)  return { bg:'#1a1f2e', color:'#6a9fd8' };
+    if (e === E_ENTREGADO) return { bg:'#0f2a1c', color:'#3aaa7a' };
+    return { bg:'#2a2a2a', color:'#555' };
+  }
+  function iniciales(nombre) {
+    if (!nombre) return '??';
+    return nombre.trim().split(/\s+/).slice(0,2).map(p=>p[0]).join('').toUpperCase();
+  }
+  function set(id, val) { document.getElementById(id).textContent = val; }
+
+  const CAT_COLORS = ['#3aaa7a','#6a9fd8','#efb234','#cc5555','#9f7ad8','#e07a5f','#3a86a8'];
+
+  async function fetchTabla(tabla) {
+    const res = await fetch(apiUrl(tabla), { method:'POST', headers: HEADERS, body: BODY });
+    if (!res.ok) throw new Error('HTTP ' + res.status + ' en ' + tabla);
+    const data = await res.json();
+    return Array.isArray(data) ? data : (data.Rows || data.rows || []);
+  }
+
+  async function cargarDatos() {
+    set('fecha-hoy', new Date().toLocaleDateString('es-CL',{ weekday:'short', day:'numeric', month:'short' }));
+
+    try {
+      // Carga en paralelo ambas tablas
+      const [pedidos, productos] = await Promise.all([
+        fetchTabla(T_PEDIDOS),
+        fetchTabla(T_PRODUCTOS)
+      ]);
+
+      // ── MÉTRICAS PEDIDOS ──
+      const total     = pedidos.length;
+      const revision  = pedidos.filter(r=>(r[COL_ESTADO]||'').trim().toUpperCase()===E_REVISION).length;
+      const revisado  = pedidos.filter(r=>(r[COL_ESTADO]||'').trim().toUpperCase()===E_REVISADO).length;
+      const entregado = pedidos.filter(r=>(r[COL_ESTADO]||'').trim().toUpperCase()===E_ENTREGADO).length;
+
+      set('m-total',    total);
+      set('m-revision', revision);
+      set('m-revisado', revisado);
+      set('m-entregado',entregado);
+      set('subtitulo',  `${total} pedidos · ${revision} en revisión · ${entregado} entregados`);
+
+      // ── PEDIDOS RECIENTES ──
+      const recientes = [...pedidos].reverse().slice(0, 6);
+      const lista = document.getElementById('pedidos-lista');
+      lista.innerHTML = recientes.length === 0
+        ? '<div class="panel-loading">Sin pedidos</div>'
+        : recientes.map(r => {
+            const nombre = r[COL_CLIENTE] || '—';
+            const folio  = r[COL_FOLIO]   || r['ID_Pedido'] || '';
+            const estado = r[COL_ESTADO]  || '';
+            const total  = r[COL_TOTAL]   ? `$${Number(r[COL_TOTAL]).toLocaleString('es-CL')}` : '';
+            const ini    = iniciales(nombre);
+            const { bg, color } = iniColor(estado);
+            const cls = badgeCls(estado);
+            return `<div class="order-row">
+              <div class="order-initials" style="background:${bg};color:${color}">${ini}</div>
+              <div class="order-info">
+                <div class="order-name">${nombre}</div>
+                <div class="order-detail">${folio}${total ? ' · ' + total : ''}</div>
+              </div>
+              <span class="badge ${cls}">${estado||'—'}</span>
+            </div>`;
+          }).join('');
+
+      // ── CATEGORÍAS PRODUCTOS ──
+      const conteo = {};
+      productos.forEach(p => {
+        const cat = (p[COL_CATEGORIA] || 'Sin categoría').trim();
+        conteo[cat] = (conteo[cat] || 0) + 1;
+      });
+      const cats = Object.entries(conteo).sort((a,b)=>b[1]-a[1]).slice(0,6);
+      const maxVal = cats[0]?.[1] || 1;
+      const catLista = document.getElementById('cat-lista');
+      catLista.innerHTML = cats.length === 0
+        ? '<div class="panel-loading">Sin productos</div>'
+        : cats.map(([cat, cnt], i) => {
+            const pct = Math.round((cnt / maxVal) * 100);
+            const col = CAT_COLORS[i % CAT_COLORS.length];
+            return `<div class="cat-row">
+              <div class="cat-name">${cat}</div>
+              <div class="cat-bar-wrap"><div class="cat-bar" style="width:${pct}%;background:${col}"></div></div>
+              <div class="cat-count">${cnt}</div>
+            </div>`;
+          }).join('');
+
+      set('ultima-act', 'Act. ' + new Date().toLocaleTimeString('es-CL',{ hour:'2-digit', minute:'2-digit' }));
+
+    } catch(err) {
+      console.error('Error API:', err);
+      document.getElementById('error-box').style.display = 'block';
+      ['m-total','m-revision','m-revisado','m-entregado'].forEach(id => set(id,'—'));
+      set('subtitulo','Beta Venta Interna');
+      document.getElementById('pedidos-lista').innerHTML = '<div class="panel-loading">Error al cargar</div>';
+      document.getElementById('cat-lista').innerHTML     = '<div class="panel-loading">Error al cargar</div>';
+    }
+  }
+
+  cargarDatos();
+  setInterval(cargarDatos, 60000);
+</script>
+</body>
+</html>
