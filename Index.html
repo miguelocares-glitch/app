@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Beta Venta Interna</title>
+<title>Venta Interna Medcell</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -78,7 +78,7 @@
 
 <div class="topbar">
   <div class="logo">M</div>
-  <div class="topbar-title">BETA VENTA INTERNA</div>
+  <div class="topbar-title">VENTA INTERNA MEDCELL</div>
   <div class="topbar-date" id="fecha-hoy"></div>
   <div class="avatar">M</div>
 </div>
@@ -295,7 +295,7 @@
       console.error('Error API:', err);
       document.getElementById('error-box').style.display = 'block';
       ['m-total','m-revision','m-revisado','m-entregado'].forEach(id => set(id,'—'));
-      set('subtitulo','Beta Venta Interna');
+      set('subtitulo','Venta Interna Medcell');
       document.getElementById('pedidos-lista').innerHTML = '<div class="panel-loading">Error al cargar</div>';
       document.getElementById('cat-lista').innerHTML     = '<div class="panel-loading">Error al cargar</div>';
     }
